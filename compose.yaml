@@ -176,7 +176,11 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --show-error --cacert /etc/nginx/ssl/server.crt https://localhost:8443/readyz >/dev/null"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent --show-error --cacert /etc/nginx/ssl/server.crt https://localhost:8443/readyz >/dev/null",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -220,7 +224,12 @@ services:
   oom-lab:
     image: python:3.13-alpine
     profiles: [debug]
-    command: ["python", "-c", "import time; data=bytearray(256*1024*1024); time.sleep(600)"]
+    command:
+      [
+        "python",
+        "-c",
+        "import time; data=bytearray(256*1024*1024); time.sleep(600)",
+      ]
     mem_limit: 64m
     cpus: 0.5
 
@@ -241,5 +250,3 @@ secrets:
 networks:
   backend:
     driver: bridge
-
-
