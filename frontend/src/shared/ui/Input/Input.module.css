@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.6rem;
+}
+
+.label {
+  color: var(--text-invert-color);
+  font-size: 16px;
+  margin-bottom: 5px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.input {
+  width: 100%;
+  border: 2px solid;
+  border-color: var(--border-base-color);
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  color: var(--text-invert-color);
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.onfocus {
+  &:focus {
+    border-color: var(--border-focus-color);
+  }
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 5px;
+}

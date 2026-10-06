@@ -1,0 +1,15 @@
+.container {
+  margin: 0 auto;
+
+  @media (max-width: 1050px) {
+    padding: 0 1rem 1rem;
+  }
+}
+
+.content {
+  margin-top: 28px;
+
+  @media (min-width: 1050px) {
+    max-width: 35%;
+  }
+}

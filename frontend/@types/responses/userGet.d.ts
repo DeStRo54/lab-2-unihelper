@@ -1,0 +1,1 @@
+type UserResponse = UserOrigin & BaseResponse;

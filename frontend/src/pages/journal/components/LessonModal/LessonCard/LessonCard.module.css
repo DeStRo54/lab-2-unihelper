@@ -1,0 +1,93 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--lesson-modal-background-color);
+  gap: 10px;
+  width: 100%;
+  max-width: 700px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.close {
+  left: 12px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.container {
+  width: 100%;
+}
+
+.section {
+  padding: 34px 20px;
+  border-bottom: 2px solid var(--component-underline-color);
+  color: var(--text-invert-color);
+}
+
+.info {
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.number {
+  white-space: pre;
+}
+
+.number-complete {
+  color: gray;
+}
+
+.text {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  margin-bottom: 0.5rem;
+}
+
+.files {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.complete {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.loader {
+  margin: auto 10px;
+}
+
+.icon {
+  margin-left: 6px;
+  width: 24px;
+  height: 24px;
+}
+
+.delete-icon {
+  margin-left: 8px;
+  width: 28px;
+  height: 28px;
+}
+
+.active {
+  color: var(--button-accept-color);
+}
+
+.moderator {
+  border: none;
+}

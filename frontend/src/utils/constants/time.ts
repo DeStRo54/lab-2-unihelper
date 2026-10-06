@@ -1,0 +1,6 @@
+export const MAX_TIME_TO_COOKIE_REFRESH = 1000 * 60 * 60 * 24 * 27;
+
+export const TIME_TO_GROUPS_REFRESH = 5 * 60 * 1000;
+export const TIME_TO_SCHEDULE_REFRESH = 10 * 60 * 1000;
+export const TIME_TO_HOMEWORKS_REFRESH = 10 * 60 * 1000;
+export const TIME_TO_NOTES_REFRESH = 20 * 60 * 1000;

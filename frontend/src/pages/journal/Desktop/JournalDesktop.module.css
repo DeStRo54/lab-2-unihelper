@@ -1,0 +1,8 @@
+.journal-body {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.desktop {
+  max-width: 45%;
+}

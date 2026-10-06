@@ -1,0 +1,62 @@
+.list {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.05rem;
+}
+
+.none-lessons {
+  color: transparent;
+}
+
+.unknown {
+  color: var(--unknown-color);
+}
+
+.lect {
+  color: var(--lect-background-color);
+}
+
+.pract {
+  color: var(--pract-background-color);
+}
+
+.lab {
+  color: var(--lab-background-color);
+}
+
+.cons {
+  color: var(--cons-background-color);
+}
+
+.zach {
+  color: var(--zach-background-color);
+}
+
+.exam {
+  color: var(--exam-background-color);
+}
+
+.item::before {
+  content: '';
+  display: inline-block;
+  border: 0.2rem solid;
+  border-radius: 50%;
+}
+
+@media (min-width: 547px) {
+  .item::before {
+    border: 0.25rem solid;
+  }
+}
+
+.skeleton-item {
+  aspect-ratio: 1;
+  display: inline-block;
+
+  @media (max-width: 547px) {
+    height: 0.4rem;
+    width: 0.4rem;
+  }
+}

@@ -1,0 +1,245 @@
+name: unihelper
+
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: unihelper
+      POSTGRES_DB: unihelper
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U unihelper -d unihelper"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    mem_limit: 512m
+    cpus: 1.0
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 128m
+    cpus: 0.5
+    restart: unless-stopped
+
+  goose:
+    build:
+      context: ./backend/migrations
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: unihelper
+      POSTGRES_DB_NAME: unihelper
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_SSLMODE: disable
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      AUTH_TTL: 720h
+      DOMAIN: localhost
+      ENCODING_MODE: console
+      HOST: 0.0.0.0
+      PORT: "8888"
+      FRONTEND_HOST: localhost
+      FRONTEND_PORT: "8443"
+      POSTGRES_CONNECT_TIMEOUT: "5"
+      POSTGRES_DB_NAME: unihelper
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_SSLMODE: disable
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_USER: unihelper
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      ACCESS_KEY: ${S3_ACCESS_KEY:-}
+      SECRET_KEY: ${S3_SECRET_KEY:-}
+      BUCKETNAME: ${S3_BUCKETNAME:-}
+      ENDPOINT: ${S3_ENDPOINT:-https://s3.cloud.ru}
+      REGION: ${S3_REGION:-ru-central-1}
+      METRICS_HOST: 0.0.0.0
+      METRICS_PORT: "8889"
+      METRICS_PATH: /metrics
+    secrets:
+      - postgres_password
+    depends_on:
+      goose:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "/app/homeworkManager", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 512m
+    cpus: 1.0
+    restart: unless-stopped
+
+  schedule-worker:
+    build:
+      context: ./backend
+      dockerfile: cmd/workers/schedule_updater/Dockerfile
+    environment:
+      AUTH_TTL: 720h
+      DOMAIN: localhost
+      ENCODING_MODE: console
+      HOST: 0.0.0.0
+      PORT: "8888"
+      POSTGRES_CONNECT_TIMEOUT: "5"
+      POSTGRES_DB_NAME: unihelper
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_SSLMODE: disable
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_USER: unihelper
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      ACCESS_KEY: ${S3_ACCESS_KEY:-}
+      SECRET_KEY: ${S3_SECRET_KEY:-}
+      BUCKETNAME: ${S3_BUCKETNAME:-}
+      ENDPOINT: ${S3_ENDPOINT:-https://s3.cloud.ru}
+      REGION: ${S3_REGION:-ru-central-1}
+    secrets:
+      - postgres_password
+    depends_on:
+      goose:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+    mem_limit: 256m
+    cpus: 0.5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      backend:
+        condition: service_healthy
+    mem_limit: 128m
+    cpus: 0.5
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      secrets:
+        - source: server_key
+          target: cert_key
+        - source: server_cert
+          target: cert_crt
+    ports:
+      - "8443:8443"
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --show-error --cacert /etc/nginx/ssl/server.crt https://localhost:8443/readyz >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    mem_limit: 128m
+    cpus: 0.5
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: [debug]
+    volumes:
+      - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - backend
+    mem_limit: 256m
+    cpus: 0.5
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    profiles: [debug]
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - backend
+    depends_on:
+      - prometheus
+    mem_limit: 256m
+    cpus: 0.5
+
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    profiles: [debug]
+    networks:
+      - backend
+    mem_limit: 128m
+    cpus: 0.5
+
+  # A controlled allocation target for OOM and memory-limit exercises.
+  oom-lab:
+    image: python:3.13-alpine
+    profiles: [debug]
+    command: ["python", "-c", "import time; data=bytearray(256*1024*1024); time.sleep(600)"]
+    mem_limit: 64m
+    cpus: 0.5
+
+volumes:
+  db_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  server_cert:
+    file: ./secrets/server.crt
+  server_key:
+    file: ./secrets/server.key
+
+networks:
+  backend:
+    driver: bridge
+
+

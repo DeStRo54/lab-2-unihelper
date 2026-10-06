@@ -1,0 +1,66 @@
+.number {
+  white-space: pre;
+}
+
+.text {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  margin-bottom: 8px;
+}
+
+.loader {
+  margin-left: 6px;
+  width: 28px;
+  height: 28px;
+}
+
+.not-found {
+  margin-bottom: 0.55rem;
+}
+
+.add-btn {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+}
+
+.add-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon {
+  margin-left: 10px;
+  width: 24px;
+  height: 24px;
+}
+
+.delete-icon {
+  margin-left: 6px;
+  width: 28px;
+  height: 28px;
+}
+
+.active {
+  color: var(--button-accept-color);
+}
+
+.notes-wrapper {
+  padding: 10px 10px 0;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  background-color: var(--component-background-color);
+  margin: 0.6rem;
+  transition: background-color 0.5s ease-in-out;
+  height: 300px;
+
+  @media (min-width: 1050px) {
+    height: 400px;
+  }
+}
+
+.notes-wrapper::-webkit-scrollbar {
+  display: inline;
+  width: 5px;
+}

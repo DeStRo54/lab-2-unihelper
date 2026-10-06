@@ -1,0 +1,20 @@
+.section {
+  padding: 34px 20px;
+}
+
+.info {
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.footer {
+  display: flex;
+  gap: 1rem;
+}
+
+.error {
+  color: orange;
+  margin-top: 12px;
+}

@@ -1,0 +1,9 @@
+.git
+ssl/
+secrets/
+*.key
+*.crt
+*.pem
+.env
+.env.*
+*.log

@@ -1,0 +1,92 @@
+:root {
+  --time-color: #ae8bff;
+  --today-color: #bd9edc;
+  --border-base-color: gray;
+  --border-focus-color: #8a6bcc;
+
+  --header-hover-color: #c9b3ff;
+
+  --button-accept-color: #ae8bff;
+  --button-question-color: #8793a6;
+  --button-attention-color: #ea0000;
+  --button-helper-color: gray;
+  --border-focus-cancel-color: #d0d0d0;
+  --button-cancel-text-color: #333;
+
+  --component-underline-color: #8793ab;
+
+  --lect-background-color: #5b40fd;
+  --pract-background-color: #e48cd1;
+  --lab-background-color: #ff0016;
+  --cons-background-color: #69ddcb;
+  --zach-background-color: #e7bd84;
+  --exam-background-color: #fb6a6a;
+
+  --unknown-color: #ff2d2d;
+
+  --max-width-mobile: 547px;
+  --max-width-desktop: 1000px;
+
+  font-family: 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-theme='dark'] {
+  --main-background-color: #17171c;
+  --new-year-background-color: #1c2230;
+
+  --text-invert-color: #f8f9fa;
+  --header-background-color: #000;
+
+  --skeleton-background-color: #2f2f38;
+
+  --button-cancel-color: #f0f0f0;
+
+  --component-background-color: #373d48;
+  --component-light-background-color: #444a56;
+
+  --lesson-modal-background-color: #1f1f1f;
+}
+
+[data-theme='light'] {
+  --main-background-color: #fcf3f3;
+  --new-year-background-color: #d9e9f1;
+
+  --text-invert-color: #17171c;
+  --header-background-color: #e2dddd;
+
+  --skeleton-background-color: #8793a6;
+
+  --button-cancel-color: #0f0f0f;
+
+  --component-background-color: #e5e8ef;
+  --component-light-background-color: #dbdeee;
+
+  --lesson-modal-background-color: #e7e3e3;
+}
+
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+  width: 100% !important;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+@media (max-width: 1050px) {
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--button-question-color);
+  border-radius: 16px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
