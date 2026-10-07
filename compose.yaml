@@ -220,19 +220,6 @@ services:
     mem_limit: 128m
     cpus: 0.5
 
-  # A controlled allocation target for OOM and memory-limit exercises.
-  oom-lab:
-    image: python:3.13-alpine
-    profiles: [debug]
-    command:
-      [
-        "python",
-        "-c",
-        "import time; data=bytearray(256*1024*1024); time.sleep(600)",
-      ]
-    mem_limit: 64m
-    cpus: 0.5
-
 volumes:
   db_data:
   redis_data:
